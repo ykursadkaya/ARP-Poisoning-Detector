@@ -2,6 +2,8 @@
 
 >Detects ARP Poisoning in local networks and displays ARP Cache.
 
+Reads ARP Cache and checks if a MAC Address is same for two or more unique IPs in the same interface, commonly router and attacker have same MAC Address.
+
 ## Compile
 
 Just compile with gcc or clang with no dependencies
