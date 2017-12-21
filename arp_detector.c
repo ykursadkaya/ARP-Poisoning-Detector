@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 	{
 		if (!strcmp(argv[1], "-h"))
 		{
-			printf("OS selection:\n\t-l*\tLinux systems\n\t\t-lc\tLinux arp command\n\t\t-lf\tLinux ARP cache file\n\t-m\tmacOS systems\n\n\t-d\tDisplay ARP Table\n");
+			printf("OS selection:\n\t-l*\tLinux systems\n\t\t-lc\tLinux arp command\n\t\t-lf\tLinux ARP cache file\n\t-m\tmacOS systems\n\t-w\tWinows systems\n\nDisplay option:\n\t-d\tDisplay ARP Table\n");
 
 			return 0;
 		}
@@ -40,9 +40,13 @@ int main(int argc, char *argv[])
 		{
 			os = 1;
 		}
+		else if (!strcmp(argv[1], "-w"))
+		{
+			os = 4;
+		}
 		else
 		{
-			printf("Wrong OS selection! (-l* for Linux -m for macOS systems)\n");
+			printf("Wrong OS selection! (-l* for Linux -m for macOS -w for Windows systems)\n");
 
 			return 0;
 		}
@@ -115,6 +119,33 @@ int main(int argc, char *argv[])
 		}
 
 		while (fscanf(arpCache, "%100s %*s %*s %100s %*s %100s", ipAddr, hwAddr, device) == 3)
+		{
+			strcpy(arpEntryArray[counter].ipAddr, ipAddr);
+			strcpy(arpEntryArray[counter].hwAddr, hwAddr);
+			strcpy(arpEntryArray[counter].device, device);
+
+			counter++;
+		}
+	}
+	else if (os == 4)
+	{
+		arpCache = popen("arp -a", "r");
+
+		if (arpCache == NULL)
+		{
+			printf("Failed to run command\n" );
+			return 1;
+		}
+
+		for (i = 0; i < 3; i++)
+		{
+			if (!fgets(line, sizeof(line), arpCache))
+			{
+				return 1;
+			}
+		}
+
+		while (fscanf(arpCache, "%100s %100s %100s", ipAddr, hwAddr, device) == 3)
 		{
 			strcpy(arpEntryArray[counter].ipAddr, ipAddr);
 			strcpy(arpEntryArray[counter].hwAddr, hwAddr);
