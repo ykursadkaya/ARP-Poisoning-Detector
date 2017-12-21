@@ -33,7 +33,7 @@ $ arp_detector <OS> <display option>
     ```
 2. Display ARP Cache option (optional)
     * Print ARP Cache `-d`
-    ###### Linux ARP Cache file with display option
+    ##### Linux ARP Cache file with display option
     ```
     $ arp detector -lf -d
     ```
