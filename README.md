@@ -36,6 +36,8 @@ $ arp_detector <OS> <display option>
 	##### Linux ARP Cache file with display option
 	```
 	$ arp detector -lf -d
+	or
+	$ arp detector -lfd
 	```
 
 Prints "ARP Poisoning detected!" alert on ARP Spoof detection, otherwise just prints ARP Cache or nothing depends on display option.

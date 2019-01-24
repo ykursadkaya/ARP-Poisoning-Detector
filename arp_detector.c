@@ -10,67 +10,63 @@ typedef struct
 	char device[BUFFER_LEN];
 } ARPEntry;
 
+enum osEnum {inv, mac, linuxCommand, linuxFile, windows};
+
 int main(int argc, char *argv[])
 {
-	int display = 0, os = 0;
+	int display = 0;
+	enum osEnum os = inv;
 
-	if (argc == 1)
+	char *s;
+	while (--argc > 0 && (*++argv)[0] == '-')
+	{
+		for(s = argv[0]+1; *s != '\0'; s++)
+		{
+			switch(*s)
+			{
+				case 'h':
+					printf("OS selection:\n\t-l*\tLinux systems\n\t\t-lc\tLinux arp command\n\t\t-lf\tLinux ARP cache file\n\t-m\tmacOS systems\n\t-w\tWindows systems\n\nDisplay option:\n\t-d\tDisplay ARP Table\n");
+					return 0;
+				case 'm':
+					os = mac;
+					break;
+				case 'l':
+					if (*(s+1) == 'c')
+					{
+						os = linuxCommand;
+						s++;
+					}
+					else if (*(s+1) == 'f')
+					{
+						os = linuxFile;
+						s++;
+					}
+					else
+					{
+						printf("Illegal option l%c (-h for help)\n", *(s+1));
+						return 0;
+					}
+					break;
+				case 'w':
+					os = windows;
+					break;
+				case 'd':
+					display = 1;
+					break;
+				default:
+					printf("Illegal option %c (-h for help)\n", *s);
+					argc = 0;
+					break;
+			}
+		}
+	}
+	if( argc != 0)
 	{
 		printf("Missing arguments! (-h for help)\n");
-
 		return 0;
 	}
-	else if (argc >= 2)
+	else
 	{
-		if (!strcmp(argv[1], "-h"))
-		{
-			printf("OS selection:\n\t-l*\tLinux systems\n\t\t-lc\tLinux arp command\n\t\t-lf\tLinux ARP cache file\n\t-m\tmacOS systems\n\t-w\tWinows systems\n\nDisplay option:\n\t-d\tDisplay ARP Table\n");
-
-			return 0;
-		}
-		else if (!strcmp(argv[1], "-lf"))
-		{
-			os = 3;
-		}
-		else if (!strcmp(argv[1], "-lc"))
-		{
-			os = 2;
-		}
-		else if (!strcmp(argv[1], "-m"))
-		{
-			os = 1;
-		}
-		else if (!strcmp(argv[1], "-w"))
-		{
-			os = 4;
-		}
-		else
-		{
-			printf("Wrong OS selection! (-l* for Linux -m for macOS -w for Windows systems)\n");
-
-			return 0;
-		}
-
-		if (argc == 3)
-		{
-			if (!strcmp(argv[2], "-d"))
-			{
-				display = 1;
-			}
-			else
-			{
-				printf("Wrong argument (-h for help)\n");
-
-				return 0;
-			}
-		}
-		else if (argc > 3)
-		{
-			printf("Too many arguments are given! (-h for help)\n");
-
-			return 0;
-		}
-	}
 
 	FILE *arpCache;
 	char line[BUFFER_LEN];
@@ -176,4 +172,5 @@ int main(int argc, char *argv[])
 
 	fclose(arpCache);
 	return 0;
+	}
 }
